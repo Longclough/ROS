@@ -1,0 +1,9 @@
+{
+    "type": "VehicleTypeData",
+    "id": "Spitfire",
+    "params": [
+        {"type": "max_altitude", "value": 50000},
+        {"type": "cruise_altitude", "value": 30000},
+        {"type": "max_airspeed", "value": 1}
+    ]
+}

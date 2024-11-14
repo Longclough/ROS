@@ -1,0 +1,60 @@
+trigger: none
+
+variables:
+  - group: AcrConfig
+
+resources:
+  repositories:
+    - repository: pipelines
+      type: git
+      name: Collective/azdo-pipelines
+
+pool:
+  name: Release
+
+stages:
+  - template: semver/stages/determine.yaml@pipelines
+  - stage: Validate
+    displayName: Validate PR
+    jobs:
+      - job: validate_pr
+        displayName: Validate PR
+        container: pulsardevcr.azurecr.io/pybind:latest
+        steps:
+          - checkout: self
+          - script: |
+              apt update && apt install -y libjsoncpp-dev && rm -rf /var/lib/apt/lists/*
+              apt update && apt install -y libgeos-dev && rm -rf /var/lib/apt/lists/*
+            displayName: Install cpp library dependencies
+          - script: |              
+              cd bindings
+              ./clone_pybind11.sh
+              cd ..
+              cd developer-scripts              
+              ./build_cpp.sh
+              cd ..
+            displayName: Build cpp library
+          - template: /python/tasks/run-tests.yaml@pipelines
+            parameters:
+              tests_dir: test/unit
+              coverage_dir: app
+              requirements_file: requirements-dev.txt
+          - template: /python/tasks/run-tests.yaml@pipelines
+            parameters:
+              tests_dir: test/api
+              coverage_dir: app
+              requirements_file: requirements-dev.txt
+  - stage: BuildAndPublish
+    displayName: Build and Publish Container
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: routes-calculation-extension-ros-app
+          container_display_name: RoutesCalculationExtensionROSApp
+          environment_name: dev
+          working_directory: .
+          version_number: $(Build.BuildNumber)
+          image_tag: pullrequest$(System.PullRequest.PullRequestId)
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)

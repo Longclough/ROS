@@ -1,0 +1,10 @@
+{
+    "type": "VehicleData",
+    "id": "XH558",
+    "vehicle_type": "Vulcan",
+    "params": [
+        {"type": "tail_number", "value": "XH558"},
+        {"type": "takeoff_mass", "value": 1},
+        {"type": "UC_position", "value": "up"}
+    ]
+}

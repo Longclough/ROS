@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "routesRequiredServicesApp.fullname" . }}
+  labels:
+    {{- include "routesRequiredServicesApp.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "routesRequiredServicesApp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "routesRequiredServicesApp.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "routesRequiredServicesApp.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: AIRSPACE_SERVICE
+              value: http://{{ .Release.Name }}-environment-infrastructure-app:80/environment-infrastructure/airspace
+            - name: GEOGRAPHY_SERVICE
+              value: http://{{ .Release.Name }}-geography-app:80/geography/terrain
+            - name: WEATHER_SERVICE
+              value: http://{{ .Release.Name }}-weather-app:80/weather/get-bad-weather
+            - name: VEHICLE_PERFORMANCE_SERVICE
+              value: http://{{ .Release.Name }}-vehicle-performance-api:80/vehicle_performance/get-params
+            - name: MQTT_BROKER
+              value: mqtt
+            - name: MQTT_PORT
+              value: "1883"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

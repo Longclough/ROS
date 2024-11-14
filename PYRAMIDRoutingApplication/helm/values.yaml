@@ -1,0 +1,62 @@
+ingress:
+  hostName: midas-dev-aks-ingress.uksouth.cloudapp.azure.com
+  rootPath: /
+
+# Sub Chart values
+routes-app:
+  image:
+    name: routes-app
+    repository: pulsardevcr.azurecr.io/routes-app
+    tag: 0.1.7
+
+geography-app:
+  image:
+    name: geography-app
+    repository: pulsardevcr.azurecr.io/geography-app
+    tag: 0.1.7
+
+weather-app:
+  image:
+    name: weather-app
+    repository: pulsardevcr.azurecr.io/weather-app
+    tag: 0.1.5
+
+routes-calculation-extension-app:
+  image:
+    name: routes-calculation-extension-ros-app
+    repository: pulsardevcr.azurecr.io/routes-calculation-extension-ros-app
+    tag: 0.1.7
+    # name: routes-calculation-extension-simple-app
+    # repository: pulsardevcr.azurecr.io/routes-calculation-extension-simple-app
+    # tag: 1.0.20230726.1
+
+routes-required-services-app:
+  image:
+    name: routes-required-services-app
+    repository: pulsardevcr.azurecr.io/routes-required-services-app
+    tag: 0.1.6
+
+environment-infrastructure-app:
+  image:
+    name: environment-infrastructure-app
+    repository: pulsardevcr.azurecr.io/environment-infrastructure-app
+    tag: 0.1.6
+
+environment-infrastructure-db:
+  image:
+    name: environment-infrastructure-db
+    repository: pulsardevcr.azurecr.io/environment-infrastructure-db
+    tag: 0.1.6
+
+vehicle-performance-api:
+  image:
+    name: vehicle-performance-api
+    repository: pulsardevcr.azurecr.io/vehicle_performance-api
+    tag: 1.0.20230726.1
+
+mosquitto-mqtt:
+  image:
+    name: eclipse-mosquitto
+    repository: pulsardevcr.azurecr.io/mqtt
+    tag: 0.1.3
+

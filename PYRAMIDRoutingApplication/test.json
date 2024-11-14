@@ -1,0 +1,7 @@
+{
+	"requirement":
+	[
+		{"id":"r1","latitude":53.903189,"longitude":-2.770097,"altitude":1},
+		{"id":"r2","latitude":53.6475,"longitude":-3.005278,"altitude":1}
+	]
+}

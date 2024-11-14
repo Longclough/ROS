@@ -1,0 +1,41 @@
+trigger:
+  branches:
+    include: 
+    - main
+
+variables:
+  - name: VERSION_NUMBER
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+      value: 1.0.$(Build.BuildNumber)
+    ${{ else }}: 
+      value: 1.0.$(Build.BuildNumber)-$(Build.SourceBranchName)
+
+  - name: IMAGE_TAG
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+      value: latest
+    ${{ else }}: 
+      value: $(Build.SourceBranchName)
+
+  - group: AcrConfig
+
+resources:
+  repositories: 
+  - repository: pipelines
+    type: git
+    name: Collective/azdo-pipelines
+
+stages:
+- stage: BuildAndRelease
+  displayName: Container - Build and Release
+  jobs:
+  - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+    parameters:
+      container_name: vehicle_performance-api
+      container_display_name: VehiclePerformanceAPI
+      environment_name: dev
+      working_directory: .
+      version_number: $(VERSION_NUMBER)
+      image_tag: $(IMAGE_TAG)
+      acr_name: $(acr_name)
+      acr_token: $(acr_token)
+      acr_username: $(acr_username)

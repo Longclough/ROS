@@ -1,0 +1,5 @@
+fastapi==0.112.3
+uvicorn==0.30.6
+Fiona==1.10.0
+shapely==2.0.6
+geojson==3.1.0

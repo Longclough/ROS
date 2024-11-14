@@ -1,0 +1,10 @@
+{
+    "type": "VehicleData",
+    "id": "PM631",
+    "vehicle_type": "Spitfire",
+    "params": [
+        {"type": "tail_number", "value": "PM631"},
+        {"type": "takeoff_mass", "value": 1},
+        {"type": "UC_position", "value": "up"}
+    ]
+}

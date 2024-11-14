@@ -1,0 +1,45 @@
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  - group: AcrConfig
+
+resources:
+  repositories:
+    - repository: pipelines
+      type: git
+      name: Collective/azdo-pipelines
+
+stages:
+  - template: semver/stages/determine.yaml@pipelines
+  - stage: BuildAndPublish
+    displayName: Build and Publish Container
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: environment-infrastructure-app
+          container_display_name: EnvironmentInfrastructureApp
+          environment_name: dev
+          working_directory: .
+          version_number: $(Build.BuildNumber)
+          image_tag: latest
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)
+
+  - stage: BuildAndReleaseDB
+    displayName: Container - Build and Release DB
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: environment-infrastructure-db
+          container_display_name: EnvironmentInfrastructureDB
+          environment_name: dev
+          working_directory: ./database
+          version_number: $(Build.BuildNumber)
+          image_tag: latest
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)

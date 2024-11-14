@@ -1,0 +1,9 @@
+{
+    "type": "VehicleTypeData",
+    "id": "Vulcan",
+    "params": [
+        {"type": "max_altitude", "value": 70000},
+        {"type": "cruise_altitude", "value": 65000},
+        {"type": "max_airspeed", "value": 1}
+    ]
+}

@@ -1,0 +1,1 @@
+sudo docker run --name routes-required-services-app --rm -it -p 8085:8080 -e AIRSPACE_SERVICE=http://environment-infrastructure-app:8080/environment-infrastructure/airspace -e GEOGRAPHY_SERVICE=http://geography-app:8080/geography/terrain -e WEATHER_SERVICE=http://weather-app:8080/weather/get-bad-weather -e MQTT_BROKER=mqtt --network app-network routes-required-services-app

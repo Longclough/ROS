@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "docker-build",
+			"label": "docker-build",
+			"platform": "python",
+			"dockerBuild": {
+				"tag": "vehicleperformance:latest",
+				"dockerfile": "${workspaceFolder}/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "init docker compose",
+			"command": "docker compose -f docker-compose.debug.yml down && docker compose -f docker-compose.debug.yml up -d --build && sleep 10s",
+			"problemMatcher": []
+		}
+	]
+}

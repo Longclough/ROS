@@ -1,0 +1,63 @@
+trigger: none
+
+variables:
+  - group: AcrConfig
+
+resources:
+  repositories:
+    - repository: pipelines
+      type: git
+      name: Collective/azdo-pipelines
+
+parameters:
+- name: JUNIT_REPORT
+  type: string
+  default: '**/surefire-reports/TEST-*.xml'
+
+stages:
+  - template: semver/stages/determine.yaml@pipelines
+  - stage: Validate
+    displayName: Validate PR
+    jobs:
+      - job: validate_pr
+        displayName: Validate PR
+        steps:
+          - checkout: self
+          - task: Maven@4
+            displayName: Compile and Test
+            inputs:
+              jdkVersionOption: 1.17
+              mavenPomFile: pom.xml
+              publishJUnitResults: true
+              testResultsFiles: ${{ parameters.JUNIT_REPORT }}
+              goals: compile test
+
+  - stage: BuildAndPublish
+    displayName: Build and Publish Container
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: environment-infrastructure-app
+          container_display_name: EnvironmentInfrastructureApp
+          environment_name: dev
+          working_directory: .
+          version_number: $(Build.BuildNumber)
+          image_tag: pullrequest$(System.PullRequest.PullRequestId)
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)
+
+  - stage: BuildAndPublishDB
+    displayName: Container - Build and Publish DB
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: environment-infrastructure-db
+          container_display_name: EnvironmentInfrastructureDB
+          environment_name: dev
+          working_directory: ./database
+          version_number: $(Build.BuildNumber)
+          image_tag: pullrequest$(System.PullRequest.PullRequestId)
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)

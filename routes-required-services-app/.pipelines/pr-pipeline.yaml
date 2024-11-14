@@ -1,0 +1,47 @@
+trigger: none
+
+variables:
+  - group: AcrConfig
+
+resources:
+  repositories:
+    - repository: pipelines
+      type: git
+      name: Collective/azdo-pipelines
+
+pool:
+  name: Release
+
+stages:
+  - template: semver/stages/determine.yaml@pipelines
+  - stage: Validate
+    displayName: Validate PR
+    jobs:
+      - job: validate_pr
+        displayName: Validate PR
+        steps:
+          - checkout: self
+          - template: /python/tasks/run-tests.yaml@pipelines
+            parameters:
+              tests_dir: test/unit
+              coverage_dir: app
+              requirements_file: requirements-dev.txt
+          - template: /python/tasks/run-tests.yaml@pipelines
+            parameters:
+              tests_dir: test/api
+              coverage_dir: app
+              requirements_file: requirements-dev.txt
+  - stage: BuildAndPublish
+    displayName: Build and Publish Container
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: routes-required-services-app
+          container_display_name: RoutesRequiredServicesApp
+          environment_name: dev
+          working_directory: .
+          version_number: $(Build.BuildNumber)
+          image_tag: pullrequest$(System.PullRequest.PullRequestId)
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)

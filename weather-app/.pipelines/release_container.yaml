@@ -1,0 +1,30 @@
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  - group: AcrConfig
+
+resources:
+  repositories:
+    - repository: pipelines
+      type: git
+      name: Collective/azdo-pipelines
+
+stages:
+  - template: semver/stages/determine.yaml@pipelines
+  - stage: BuildAndPublish
+    displayName: Build and Publish Container
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: weather-app
+          container_display_name: WeatherApp
+          environment_name: dev
+          working_directory: .
+          version_number: $(Build.BuildNumber)
+          image_tag: latest
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)

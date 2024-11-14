@@ -1,0 +1,165 @@
+version: "3.9"
+services:
+
+  routes:
+    hostname: routes-app
+    image: routes-app
+    build: ../routes-app
+    environment:
+      - POST_ROUTE_SERVICE=http://routes-required-services-app:8080/routes-required-services/route
+      - CALCULATE_LEG_SERVICE=http://routes-calculation-extension-app:8080/routes-calculation-extension/calculate-leg
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  routes-calculation-extension:
+    hostname: routes-calculation-extension-app
+    image: routes-calculation-extension-ros-app
+    build: ../routes-calculation-extension-ros-app
+    environment:
+      - SPATIAL_CONSTRAINTS_SERVICE=http://routes-required-services-app:8080/routes-required-services/spatial-constraints
+    ports:
+      - "8081:8080"
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  routes-required-services:
+    hostname: routes-required-services-app
+    image: routes-required-services-app
+    build: ../routes-required-services-app
+    environment:
+      #- AIRSPACE_SERVICE=http://environment-infrastructure-app:8080/environment-infrastructure/airspace
+      - GEOGRAPHY_SERVICE=http://geography-app:8080/geography/terrain
+      #https://midas-dev-aks-ingress.uksouth.cloudapp.azure.com/geography/terrain
+      #- WEATHER_SERVICE=http://weather-app:8080/weather/get-bad-weather
+      - MQTT_BROKER=mqtt
+    ports:
+      - "8082:8080"
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+#  environment-infrastructure:
+#    hostname: environment-infrastructure-app
+#    image: environment-infrastructure-app
+#    build: ../environment-infrastructure-app
+#    depends_on:
+#      environment-infrastructure-db:
+#        condition: service_started
+#    ports:
+#      - "8083:8080"
+#    networks:
+#      - app-network
+#    deploy:
+#      replicas: 1
+#      update_config:
+#        parallelism: 2
+#        delay: 10s
+#      restart_policy:
+#        condition: on-failure
+        
+#  environment-infrastructure-db:
+#    hostname: environment-infrastructure-db
+#    image: environment-infrastructure-db
+#    build: ../environment-infrastructure-app/database
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=change-me
+#    volumes:
+#      - environment-infrastructure-db-data:/var/lib/mysql
+#    networks:
+#      - app-network
+#    deploy:
+#      placement:
+#        max_replicas_per_node: 1
+#        constraints:
+#          - "node.role==manager"
+
+  geography:
+    hostname: geography-app
+    image: geography-app
+    build: ../geography-app
+    ports:
+      - "8084:8080"
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  weather:
+    hostname: weather-app
+    image: weather-app
+    build: ../weather-app
+    ports:
+      - "8085:8080"
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  vehicle-performance:
+    hostname: vehicle-performance-app
+    image: vehicle-performance-app
+    build: ../vehicle-performance
+    ports:
+      - "8086:8080"
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  mqtt:
+    hostname: mqtt
+    image: mqtt
+    ports:
+      - "1884:1883"
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+networks:
+  app-network:
+
+volumes:
+  environment-infrastructure-db-data:

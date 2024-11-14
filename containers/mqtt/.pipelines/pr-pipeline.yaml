@@ -1,0 +1,30 @@
+trigger: none
+
+variables:
+  - group: AcrConfig
+
+resources:
+  repositories:
+    - repository: pipelines
+      type: git
+      name: Collective/azdo-pipelines
+
+pool:
+  name: Release
+
+stages:
+  - template: semver/stages/determine.yaml@pipelines
+  - stage: BuildAndPublish
+    displayName: Build and Publish Container
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: mqtt
+          container_display_name: Mosquitto MQTT
+          environment_name: dev
+          working_directory: mqtt
+          version_number: $(Build.BuildNumber)
+          image_tag: pullrequest$(System.PullRequest.PullRequestId)
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)

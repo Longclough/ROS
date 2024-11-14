@@ -1,0 +1,35 @@
+trigger: none
+
+variables:
+  - group: AcrConfig
+
+resources:
+  repositories:
+    - repository: pipelines
+      type: git
+      name: Collective/azdo-pipelines
+
+stages:
+  - template: semver/stages/determine.yaml@pipelines
+  - stage: Validate
+    displayName: Validate PR
+    jobs:
+      - template: python/jobs/run-unit-test.yaml@pipelines
+        parameters:
+          TEST_DIR: test/api
+          COVERAGE_DIR: app
+          REQUIREMENTS_FILE: requirements-dev.txt
+  - stage: BuildAndPublish
+    displayName: Build and Publish Container
+    jobs:
+      - template: ./containers/jobs/build_and_publish_container.yaml@pipelines
+        parameters:
+          container_name: weather-app
+          container_display_name: WeatherApp
+          environment_name: dev
+          working_directory: .
+          version_number: $(Build.BuildNumber)
+          image_tag: pullrequest$(System.PullRequest.PullRequestId)
+          acr_name: $(acr_name)
+          acr_token: $(acr_token)
+          acr_username: $(acr_username)

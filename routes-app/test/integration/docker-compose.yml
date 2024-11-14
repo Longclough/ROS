@@ -1,0 +1,28 @@
+#
+# Docker compose file used in integration tests
+#
+
+version: "3.9"
+services:
+
+  routes:
+    image: routes-app
+    build: ../routes-app
+  
+  echo:
+    hostname: echo
+    image: mendhak/http-https-echo:latest
+    environment:
+      - POST_ROUTE_SERVICE=http://routes-required-services-app:8080/routes-required-services/route
+      - CALCULATE_LEG_SERVICE=http://routes-calculation-extension-app:8080/routes-calculation-extension/calculate-leg
+    ports:
+      - "8090:8080"
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
