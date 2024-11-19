@@ -2,7 +2,7 @@
  * Coordinates.cpp
  *
  *  Created on: 10 Nov 2022
- *      Author: graham.lund
+ *      Author: anon
  */
 
 #include <geometry/Coordinates.h>

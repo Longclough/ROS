@@ -2,7 +2,7 @@
  * Geoid.h
  *
  *  Created on: 11 Nov 2022
- *      Author: graham.lund
+ *      Author: anon
  */
 
 #ifndef SRC_GEOMETRY_GEOID_H_

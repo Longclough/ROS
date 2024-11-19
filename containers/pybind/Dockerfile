@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 ARG PIP_INSTALL="python3 -m pip install --no-cache-dir"
 ARG PYPI_REPO_HOST

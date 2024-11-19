@@ -25,7 +25,7 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release .. && \
 # image
 ########################################################################################################################
 
-FROM ubuntu
+FROM ubuntu:22.04
 # Set build environment arguments
 ARG PIP_INSTALL="python3 -m pip install --no-cache-dir"
 

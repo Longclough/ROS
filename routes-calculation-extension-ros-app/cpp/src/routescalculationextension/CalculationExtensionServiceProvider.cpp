@@ -248,11 +248,11 @@ namespace routescalculationextensionros
             //result.emplace_back(0, 0, 0);
             //std::cout << "value 1";
         }
-        //if (!result.empty())
-        //{
-        //    result.emplace_back(to.lat, to.lon, to.alt);
-        //    std::cout << "value 2";
-        //}
+        if (!result.empty())
+        {
+            result.emplace_back(to.lat, to.lon, to.alt);
+            std::cout << "value 2";
+        }
         return result;
     }
 

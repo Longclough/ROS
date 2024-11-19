@@ -2,7 +2,7 @@
  * Geoid.cpp
  *
  *  Created on: 11 Nov 2022
- *      Author: graham.lund
+ *      Author: anon
  */
 
 #include <geometry/Geoid.h>

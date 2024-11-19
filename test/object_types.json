@@ -1,0 +1,4 @@
+{"objectTypes":[
+    {"name":"WAYPOINT", "creatable":true},
+    {"name":"VEHICLE", "creatable":false}
+]}

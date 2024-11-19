@@ -5,7 +5,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.baesystems.midas</groupId>
+  <groupId>com.hmi.router</groupId>
   <artifactId>hmi-app</artifactId>
   <version>1.0.0</version>
 
@@ -95,6 +95,10 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.1.0</version>
         </plugin>
       </plugins>
     </pluginManagement>

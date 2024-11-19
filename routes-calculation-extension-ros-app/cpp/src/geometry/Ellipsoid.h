@@ -2,7 +2,7 @@
  * Ellipsoid.h
  *
  *  Created on: 10 Nov 2022
- *      Author: graham.lund
+ *      Author: anon
  */
 
 #ifndef SRC_ELLIPSOID_H_

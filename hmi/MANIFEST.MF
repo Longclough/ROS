@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Created-By: 11.0.2 (Oracle Corporation)
-Main-Class: com.baesystems.midas.Application
+Main-Class: com.hmi.router.Application
 Class-Path: ../worldwind/worldwind.jar ../worldwind/worldwindx.jar lib/jeromq-0.5.3.jar lib/json-20230227.jar lib/org.eclipse.paho.client.mqttv3-1.2.5.jar lib/worldwind.jar
