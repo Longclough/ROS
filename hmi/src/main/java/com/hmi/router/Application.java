@@ -25,7 +25,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
@@ -104,31 +106,44 @@ public class Application extends ApplicationTemplate {
             //this.getWwd().getView().setEyePosition(Position.fromDegrees(53.742350388934085, -2.6979745427664668, 50));
             
             //Warton
-            this.getWwd().getView().setEyePosition(Position.fromDegrees(53.745793304041634, -2.894669081029672, 100));
+            //this.getWwd().getView().setEyePosition(Position.fromDegrees(53.745793304041634, -2.894669081029672, 100));
+
+            //W23
+            this.getWwd().getView().setEyePosition(Position.fromDegrees(53.74552338772606,  -2.8945526636429477, 150));
             
             //Turns bing layer on
-            for (Layer layer : this.getWwd().getModel().getLayers())
-            {
-                if(layer.getName().contains("Bing"))
-                {
-                    layer.setEnabled(true);
-                }
-            }
+            //for (Layer layer : this.getWwd().getModel().getLayers())
+            //{
+            //    if(layer.getName().contains("Bing"))
+            //    {
+            //        layer.setEnabled(true);
+            //    }
+            //}
     
             for (Layer layer : this.getWwd().getModel().getLayers())
             {
-                if(layer.getName().contains("Atmosphere"))
-                {
-                    layer.setEnabled(false);
+ 
+                List<String> layers = List.of("Atmosphere", "Stars", "NASA Blue Marble Image", "Blue Marble May 2004", "i-cubed Landsat", "Place Names", "World Map", "Compass");
+
+                for (String item : layers)
+                {    
+                    if(layer.getName().contains(item))
+                        {
+                            layer.setEnabled(false);
+                        }
                 }
                 
             }
 
             //Creates room layer where the imageSource is the url to the image
             //createLayer("Room");
-            RenderableLayer roomlayer=createLayer("Room");
-            SurfaceImage roomimage=new SurfaceImage("n52_w003_1arc_v3.tif", new Sector(Angle.fromDegrees(53.74233215376856),Angle.fromDegrees(53.74243203331977),Angle.fromDegrees(-2.698095163834937),Angle.fromDegrees(-2.6979048032333046)));
-            roomlayer.addRenderable(roomimage);
+            //RenderableLayer roomlayer=createLayer("Room");
+            //SurfaceImage roomimage=new SurfaceImage("n52_w003_1arc_v3.tif", new Sector(Angle.fromDegrees(53.74233215376856),Angle.fromDegrees(53.74243203331977),Angle.fromDegrees(-2.698095163834937),Angle.fromDegrees(-2.6979048032333046)));
+            //roomlayer.addRenderable(roomimage);
+
+            RenderableLayer w23layer=createLayer("W23");
+            SurfaceImage w23image=new SurfaceImage("w23.tif", new Sector(Angle.fromDegrees(53.7459153),Angle.fromDegrees(53.7447775),Angle.fromDegrees( -2.8951043),Angle.fromDegrees( -2.8940975)));
+            w23layer.addRenderable(w23image);
 
             dragger = new Dragger(this.getWwd());
             this.getWwd().addSelectListener(dragger);
@@ -227,7 +242,7 @@ public class Application extends ApplicationTemplate {
             //Messaging.getInstance().createObject(ObjectType.get("VEHICLE"), Position.fromDegrees(53.742350388934085, -2.6979745427664668, 50));
             
             //Warton location
-            Messaging.getInstance().createObject(ObjectType.get("VEHICLE"), Position.fromDegrees(53.745793304041634, -2.894669081029672, 55));
+            Messaging.getInstance().createObject(ObjectType.get("VEHICLE"), Position.fromDegrees(53.74578428232344, -2.894796063871912, 10));
             
             try {          
                 String geographyBaseUrl = AppProperties.getInstance().getGeographyBaseUrl();

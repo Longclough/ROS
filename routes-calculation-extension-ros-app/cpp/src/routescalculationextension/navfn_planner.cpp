@@ -90,7 +90,7 @@ NavfnPlanner::configure(
   declare_parameter_if_not_declared(
     node, name + ".use_final_approach_orientation", rclcpp::ParameterValue(false));
   node->get_parameter(name + ".use_final_approach_orientation", use_final_approach_orientation_);*/
-  tolerance_ = 0.5;
+  tolerance_ = 0.05;
   use_astar_ = false;
   allow_unknown_ = true;
   use_final_approach_orientation_ = false;

@@ -55,7 +55,7 @@ namespace routescalculationextensionros
         if (!reader->parse(constraints.c_str(), constraints.c_str() + rawJsonLength, &root,
                            &err))
         {
-            std::cout << "Error reading constraints json: " << err << std::endl;
+            //std::cout << "Error reading constraints json: " << err << std::endl;
         }
 
         Json::Value jsonFeatures = root["features"];
@@ -107,7 +107,7 @@ namespace routescalculationextensionros
             //GEOSCoordSeq_getSize(coords, &Newsize);
             //std::cout << std::to_string(size) << " points, simplified to " << std::to_string(Newsize) << std::endl;
         }
-        std::cout << "Processed constraints" << std::endl;
+        //std::cout << "Processed constraints" << std::endl;
     }
 
     std::vector<geometry::Cartesian> CalculationExtensionServiceProvider::getCartesianExteriorCoords(const GEOSGeometry *polygon, const geometry::Point &origin) const
@@ -133,6 +133,7 @@ namespace routescalculationextensionros
     {
         geometry::Point legStartLocation = {from.lon, from.lat, from.alt};
         geometry::Point legEndLocation = {to.lon, to.lat, to.alt};
+        //std::cout << "Route has " << legStartLocation << " many start points" << std::endl;
 
         //Amount the costmap is increased relative to the planned route
         const double margin = 100; // metres
@@ -180,7 +181,7 @@ namespace routescalculationextensionros
             yCells = int(std::ceil(extentCart.n / resolution));
         } while (xCells > maxCells || yCells > maxCells);
 
-        std::cout << "costmap has resolution " << std::to_string(resolution) << " xCells= " << std::to_string(xCells) << " yCells= " << std::to_string(yCells) << " extentCart.e= " << std::to_string(extentCart.e) << " extentCart.n= " << std::to_string(extentCart.n) << std::endl;
+        //std::cout << "costmap has resolution " << std::to_string(resolution) << " xCells= " << std::to_string(xCells) << " yCells= " << std::to_string(yCells) << " extentCart.e= " << std::to_string(extentCart.e) << " extentCart.n= " << std::to_string(extentCart.n) << std::endl;
         std::vector<GEOSGeometry *> keepIns;
         std::vector<GEOSGeometry *> keepOuts;
 
@@ -206,7 +207,7 @@ namespace routescalculationextensionros
             }
         }
 
-        std::cout << "Filled cost map" << std::endl;
+        //std::cout << "Filled cost map" << std::endl;
         
         //if(debug) 
         costMap->saveMap("/tmp/test.pgm");
@@ -241,18 +242,35 @@ namespace routescalculationextensionros
         std::cout << "Leg has " << std::to_string(planPoints.size()) << " points, simplified to " << std::to_string(simplePlanPoints.size()) << std::endl;
 
         std::vector<Point> result;
-        for (const geometry::Cartesian& planPoint : simplePlanPoints)
+        for (const geometry::Cartesian& planPoint : planPoints)
         {
             geometry::Point point = geometry::Coordinates::cartesianToGeodetic(geometry::Ellipsoid::WGS84, planPoint, origin);
             result.emplace_back(point.y, point.x, to.alt);
-            //result.emplace_back(0, 0, 0);
-            //std::cout << "value 1";
+            
         }
-        if (!result.empty())
-        {
-            result.emplace_back(to.lat, to.lon, to.alt);
-            std::cout << "value 2";
-        }
+        //if (!result.empty())
+        //{
+        //    result.emplace_back(to.lat, to.lon, to.alt);
+        //   // std::cout << "value 2";
+        //}
+        std::cout << "Leg has " << std::to_string(result.size()) << std::endl;
+
+        std::vector<geometry::Cartesian> translatedPoints;
+        //translatedPoints.push_back(geometry::Cartesian(start.pose.position.x, start.pose.position.y, start.pose.position.z));
+        translatedPoints.push_back(geometry::Cartesian(goal.pose.position.x, goal.pose.position.y, goal.pose.position.z));
+
+        geometry::Point ConvertedPoint = geometry::Coordinates::cartesianToGeodetic(geometry::Ellipsoid::WGS84, translatedPoints[0], origin);
+
+        //Staring Coordinates
+        //std::cout << "Starting Coordinates (lon/lat) " << "lattitude: " << from.lat << " longitude: " << from.lon << std::endl;
+        //std::cout << "Starting Coordinates (cart) " << "y: " << start.pose.position.y << " x: " << start.pose.position.x << std::endl;
+        //std::cout << "Coordinates translated from cart to lonlat " << "lattitude: " << ConvertedPoint.y << " longitude: " << ConvertedPoint.x << std::endl;
+
+        //Goal Coordinates
+        std::cout << "Goal Coordinates (lon/lat) " << "lattitude: " << to.lat << " longitude: " << to.lon << std::endl;
+        std::cout << "Goal Coordinates (cart) " << "y: " << goal.pose.position.y << " x: " << goal.pose.position.x << std::endl;
+        std::cout << "Coordinates translated from cart to lonlat " << "lattitude: " << ConvertedPoint.y << " longitude: " << ConvertedPoint.x << std::endl;
+
         return result;
     }
 

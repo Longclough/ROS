@@ -12,6 +12,12 @@ RUN apt-get update && apt-get install -y \
     maven \
     && rm -rf /var/lib/apt/lists/*
 
+#RUN mvn compile
+
+
+#CMD ["mvn", "exec:java", "-Dexec.mainClass=com.hmi.router.Application"]
+
+
 
 
 
